@@ -1,0 +1,95 @@
+.login{
+    width: 100vw;
+    height: 100vh;
+    background:linear-gradient(
+        to bottom,
+        rgba(0,0,0,0) 0%,
+        rgba(0,0,0,1) 100%
+        ), 
+        url('https://assets.nflxext.com/ffe/siteui/vlv3/9c5457b8-9ab0-4a04-9fc1-e608d5670f1a/710d74e0-7158-408e-8d9b-23c219dee5df/IN-en-20210719-popsignuptwoweeks-perspective_alpha_website_small.jpg');
+        background-size: cover;
+        position: relative;
+        
+        .top{
+            .wrapper{
+                padding: 20px 50px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+        
+                .logo{
+                    height: 40px;
+                }
+        
+                
+            }
+        }
+
+
+
+        .container{
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+
+
+            form{
+                width: 300px;
+                height: 300px;
+                padding: 30px;
+                border-radius: 5px;
+                background-color: var(--main-color);
+                display: flex;
+                flex-direction: column;
+                justify-content: space-around;
+
+                input{
+                    height: 35px;
+                    border-radius: 5px;
+                    background-color: gray;
+                    color: white;
+                    padding-left: 10px;
+
+                    &::placeholder {
+                        color: white;
+                    }
+                }
+
+                a {
+                    color: white;
+                    text-decoration: none;
+                    margin-left: 5px;
+                }
+            }
+
+            button{
+                height: 35px;
+                border-radius: 5px;
+                background-color: red;
+                color: white; 
+                border: none;
+                font-size: 18px;
+                font-weight: 500;
+                cursor: pointer;
+            }
+
+            span{
+                color: lightgray;
+                b{
+                    color: white;
+                }
+            }
+
+            
+            }
+
+        }
+
+

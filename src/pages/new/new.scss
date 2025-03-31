@@ -1,0 +1,14 @@
+.new {
+    background-color: var(--main-color);
+    min-height: 100vh;
+    color: white;
+
+    .content {
+        padding: 80px 50px 0;
+
+        h1 {
+            font-size: 32px;
+            margin-bottom: 30px;
+        }
+    }
+} 
