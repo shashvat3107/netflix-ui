@@ -1,7 +1,35 @@
 import { InfoOutlined, PlayArrow } from '@material-ui/icons'
 import './featured.scss'
+import { useEffect, useState } from 'react'
+import { tmdbService, getImageUrl } from '../../services/tmdbService'
 
 export default function Featured({type}) {
+  const [movies, setMovies] = useState([])
+  const [current, setCurrent] = useState(0)
+
+  useEffect(() => {
+    // Fetch popular movies (or you can use another category)
+    const fetchMovies = async () => {
+      try {
+        const res = await tmdbService.getPopularMovies(1)
+        setMovies(res.results.slice(0, 10)) // Use first 10 movies
+      } catch (err) {
+        console.error('Error fetching featured movies:', err)
+      }
+    }
+    fetchMovies()
+  }, [])
+
+  useEffect(() => {
+    if (movies.length === 0) return
+    const interval = setInterval(() => {
+      setCurrent((prev) => (prev + 1) % movies.length)
+    }, 5000)
+    return () => clearInterval(interval)
+  }, [movies])
+
+  const movie = movies[current]
+
   return (
     <div className='featured'>
         {type && (
@@ -14,7 +42,7 @@ export default function Featured({type}) {
                     <option value='animation'>Animation</option>
                     <option value='comedy'>Comedy</option>
                     <option value='crime'>Crime</option>
-                    <option value='documentart'>Documentary</option>
+                    <option value='documentary'>Documentary</option>
                     <option value='drama'>Drama</option>
                     <option value='fantasy'>Fantasy</option>
                     <option value='historical'>Historical</option>
@@ -26,29 +54,29 @@ export default function Featured({type}) {
                 </select>
             </div>
         )}
-      <img src='https://images4.alphacoders.com/118/thumb-1920-1185748.jpg' 
-      alt='' 
-      />
-      <div className="info">
-        <img src="https://occ-0-1432-1433.1.nflxso.net/dnm/api/v6/LmEnxtiAuzezXBjYXPuDgfZ4zZQ/AAAABUZdeG1DrMstq-YKHZ-dA-cx2uQN_YbCYx7RABDk0y7F8ZK6nzgCz4bp5qJVgMizPbVpIvXrd4xMBQAuNe0xmuW2WjoeGMDn1cFO.webp?r=df1" 
-        alt="" 
+      {movie ? (
+        <>
+          <img src={getImageUrl(movie.backdrop_path || movie.poster_path, 'w1280')} alt={movie.title || movie.name} />
+          <div className="info">
+            <img src={getImageUrl(movie.poster_path, 'w300')} alt={movie.title || movie.name} />
+            <span className="desc">{movie.overview}</span>
+            <div className="buttons">
+                <button className='play'>
+                    <PlayArrow />
+                    <span>Play</span>
+                </button>
+                <button className='more'>
+                    <InfoOutlined />
+                    <span>Info</span>
+                </button>
+            </div>
+          </div>
+        </>
+      ) : (
+        <img src='https://images4.alphacoders.com/118/thumb-1920-1185748.jpg' 
+        alt='' 
         />
-        <span className="desc">
-            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Minus, iusto numquam expedita dolorum distinctio dolor 
-            pariatur? Asperiores aspernatur, 
-            id eum commodi ipsam dignissimos praesentium. Tempore cupiditate enim a nam repellat.
-        </span>
-        <div className="buttons">
-            <button className='play'>
-                <PlayArrow />
-                <span>Play</span>
-            </button>
-            <button className='more'>
-                <InfoOutlined />
-                <span>Info</span>
-            </button>
-        </div>
-      </div>
+      )}
     </div>
   )
 }

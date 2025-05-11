@@ -1,9 +1,44 @@
 import { ArrowBackIosOutlined } from '@material-ui/icons'
 import { useNavigate } from 'react-router-dom'
 import './settings.scss'
+import { useAuth } from '../../context/AuthContext'
+import { useState } from 'react'
 
 export default function Settings() {
   const navigate = useNavigate();
+  const { user, updateProfile } = useAuth();
+  const [editMode, setEditMode] = useState(false);
+  const [name, setName] = useState(user?.name || '');
+  const [phone, setPhone] = useState(user?.phone || '');
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleEdit = () => {
+    setEditMode(true);
+    setName(user?.name || '');
+    setPhone(user?.phone || '');
+    setError('');
+  };
+
+  const handleCancel = () => {
+    setEditMode(false);
+    setName(user?.name || '');
+    setPhone(user?.phone || '');
+    setError('');
+  };
+
+  const handleSave = async () => {
+    setSaving(true);
+    setError('');
+    try {
+      await updateProfile(name, phone);
+      setEditMode(false);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setSaving(false);
+    }
+  };
 
   return (
     <div className='settings'>
@@ -21,15 +56,23 @@ export default function Settings() {
           <div className="info-grid">
             <div className="info-item">
               <label>Name</label>
-              <p>John Doe</p>
+              {editMode ? (
+                <input type="text" value={name} onChange={e => setName(e.target.value)} />
+              ) : (
+                <p>{user?.name || 'No name set'}</p>
+              )}
             </div>
             <div className="info-item">
               <label>Email</label>
-              <p>john.doe@example.com</p>
+              <p>{user?.email || 'No email'}</p>
             </div>
             <div className="info-item">
               <label>Phone</label>
-              <p>+1 234 567 8900</p>
+              {editMode ? (
+                <input type="text" value={phone} onChange={e => setPhone(e.target.value)} />
+              ) : (
+                <p>{user?.phone || 'No phone set'}</p>
+              )}
             </div>
             <div className="info-item">
               <label>Membership Plan</label>
@@ -44,9 +87,17 @@ export default function Settings() {
               <p>March 1, 2024</p>
             </div>
           </div>
+          {error && <div style={{ color: 'red', margin: '10px 0' }}>{error}</div>}
         </div>
         <div className="actions">
-          <button className="edit-button">Edit Profile</button>
+          {editMode ? (
+            <>
+              <button className="edit-button" onClick={handleSave} disabled={saving}>{saving ? 'Saving...' : 'Save'}</button>
+              <button className="cancel-button" onClick={handleCancel} disabled={saving}>Cancel</button>
+            </>
+          ) : (
+            <button className="edit-button" onClick={handleEdit}>Edit Profile</button>
+          )}
           <button className="change-plan-button">Change Plan</button>
           <button className="cancel-button">Cancel Membership</button>
         </div>
